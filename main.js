@@ -268,6 +268,42 @@ app.delete('/inventory/:id', (req, res) => {
     res.json({ message: "Deleted" });
 });
 
+/**
+ * @openapi
+ * /search:
+ *   get:
+ *     summary: Search item by ID
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Found
+ *       404:
+ *         description: Not found
+ */
+app.get('/search', (req, res) => {
+    console.log("SEARCH QUERY:", req.query);
+    const { id, includePhoto } = req.query;
+
+    const item = inventory.find(x => x.id === id);
+
+    if (!item) {
+        return res.status(404).send("Not Found");
+    }
+
+    let result = `Name: ${item.name}\nDescription: ${item.description}`;
+
+    if (includePhoto) {
+        result += `\nPhoto: /inventory/${item.id}/photo`;
+    }
+
+    res.setHeader("Content-Type", "text/plain");
+    res.send(result);
+});
+
+
 app.get('/RegisterForm.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'RegisterForm.html'));
 });
