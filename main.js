@@ -72,6 +72,35 @@ app.put('/inventory/:id', (req, res) => {
     res.json({ message: "Updated", item });
 });
 
+app.get('/inventory/:id/photo', (req, res) => {
+    const item = inventory.find((x) => x.id === req.params.id);
+
+    if (!item || !item.photo) {
+        return res.status(404).json({ error: "Photo not found" });
+    }
+
+    const photoPath = path.join(CACHE_DIR, item.photo);
+
+    if (!fs.existsSync(photoPath)) {
+        return res.status(404).json({ error: "Photo file missing" });
+    }
+
+    res.setHeader("Content-Type", "image/jpeg");
+    res.sendFile(photoPath);
+});
+
+app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
+    const item = inventory.find((x) => x.id === req.params.id);
+
+    if (!item) {
+        return res.status(404).json({ error: "Not found" });
+    }
+
+    item.photo = req.file.filename;
+
+    res.json({ message: "Photo updated" });
+});
+
 app.use((req, res) => {
     res.status(405).send("Method Not Allowed");
 });
