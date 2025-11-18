@@ -57,6 +57,21 @@ app.get('/inventory/:id', (req, res) => {
     res.json(item);
 });
 
+app.put('/inventory/:id', (req, res) => {
+    const item = inventory.find((x) => x.id === req.params.id);
+
+    if (!item) {
+        return res.status(404).json({ error: "Not found" });
+    }
+
+    const { name, description } = req.body;
+
+    if (name) item.name = name;
+    if (description) item.description = description;
+
+    res.json({ message: "Updated", item });
+});
+
 app.use((req, res) => {
     res.status(405).send("Method Not Allowed");
 });
