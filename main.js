@@ -113,6 +113,14 @@ app.delete('/inventory/:id', (req, res) => {
     res.json({ message: "Deleted" });
 });
 
+app.get('/RegisterForm.html', (req, res) => {
+    res.sendFile(path.resolve("RegisterForm.html"));
+});
+
+app.get('/SearchForm.html', (req, res) => {
+    res.sendFile(path.resolve("SearchForm.html"));
+});
+
 app.use((req, res) => {
     res.status(405).send("Method Not Allowed");
 });
