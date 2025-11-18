@@ -101,6 +101,18 @@ app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
     res.json({ message: "Photo updated" });
 });
 
+app.delete('/inventory/:id', (req, res) => {
+    const index = inventory.findIndex((x) => x.id === req.params.id);
+
+    if (index === -1) {
+        return res.status(404).json({ error: "Not found" });
+    }
+
+    inventory.splice(index, 1);
+
+    res.json({ message: "Deleted" });
+});
+
 app.use((req, res) => {
     res.status(405).send("Method Not Allowed");
 });
